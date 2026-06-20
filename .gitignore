@@ -1,0 +1,15 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+pse_healthcare_master_clean.csv
+pse_healthcare_featured.csv
+pse_jittered.csv
+pse_topics.csv
+topic_summary.csv
+topic_flag_overlap.csv
+pse_monthly_stats.csv
+topic_distribution.html
+topics_over_time.html
+/incidents_map.html

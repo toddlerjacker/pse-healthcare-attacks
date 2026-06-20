@@ -1,0 +1,22 @@
+LETHALITY MODEL — leakage-controlled
+=======================================================
+Incidents: 4,230  |  Lethal: 634 (15.0%)
+Features: 35 (circumstance only; casualty fields excluded)
+
+Model                      AUC      F1
+Logistic Regression      0.927   0.628
+XGBoost                  0.934   0.667
+
+XGBoost classification report (threshold 0.5):
+              precision    recall  f1-score   support
+
+  Non-lethal       0.96      0.89      0.92       899
+      Lethal       0.56      0.82      0.67       159
+
+    accuracy                           0.88      1058
+   macro avg       0.76      0.85      0.80      1058
+weighted avg       0.90      0.88      0.89      1058
+
+Confusion matrix [rows=true, cols=pred]:
+[[798 101]
+ [ 29 130]]

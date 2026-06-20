@@ -1,0 +1,36 @@
+feature,mean_abs_shap
+Region_Gaza Strip,1.0766296
+days_since_oct7,0.8295844
+Access_Disruption,0.8073704
+residential_strike,0.44156915
+Weapon_Category_No Direct Violence,0.41993168
+Facility_Attack,0.36415234
+Conflict_Phase_Oct 7 Aftermath (Oct–Dec 2023),0.30116227
+Weapon_Category_Unknown,0.18912666
+Region_West Bank,0.1410149
+protected_entity,0.10828905
+Weapon_Category_Artillery/Shelling,0.09961732
+Weapon_Category_Airstrike,0.09172874
+Transport_Attack,0.07363922
+Weapon_Category_Gunfire/Small Arms,0.06445246
+is_weekend,0.0626866
+Perpetrator_Simple_Israeli Forces,0.056955848
+Perpetrator_Simple_Unknown,0.054205015
+Region_No Information,0.045202706
+repeat_target_text,0.03863785
+children_affected,0.03663434
+Conflict_Phase_Jan–Jun 2024,0.033028066
+Conflict_Phase_Before Oct 7 2023,0.028097833
+Weapon_Category_Explosive/IED,0.022625148
+Conflict_Phase_Jul 2024 onward,0.015019799
+Weapon_Category_Blunt/Sharp Object,0.010642749
+Perpetrator_Simple_Israeli Police/Border,0.010257798
+Perpetrator_Simple_Palestinian Armed Groups,0.0031117862
+Perpetrator_Simple_Other,0.0020531684
+Region_Unknown,0.0015954251
+Region_Jerusalem District,0.0003696969
+Weapon_Category_Arson/Fire,0.00023577016
+Perpetrator_Simple_Palestinian Authority,0.0
+Weapon_Category_Other,0.0
+Perpetrator_Simple_Israeli Settlers,0.0
+Region_Judea and Samaria,0.0
