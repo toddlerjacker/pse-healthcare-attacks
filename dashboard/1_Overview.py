@@ -9,14 +9,32 @@ from utils import load_data, sidebar_filters, get_cross_filtered
 
 st.set_page_config(
     page_title="Palestine Healthcare Attacks",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 st.markdown("""
     <style>
     .stApp { background-color: #f7f5f2; }
     header[data-testid="stHeader"] { background-color: #f7f5f2; }
-    [data-testid="stToolbar"] { background-color: #f7f5f2; }
+
+    /* Hide only the deploy button, hamburger menu, and footer —
+       NOT the whole toolbar, so the sidebar reopen arrow stays reachable */
+    [data-testid="stToolbarActions"] { visibility: hidden; }
+    .stDeployButton { display: none; }
+    #MainMenu { visibility: hidden; }
+    footer { visibility: hidden; }
+
+    /* Force the collapsed-sidebar expand control to always be visible/clickable. */
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="stExpandSidebarButton"],
+    [data-testid="collapsedControl"],
+    [data-testid="stSidebarCollapseButton"] {
+        visibility: visible !important;
+        display: flex !important;
+        opacity: 1 !important;
+        z-index: 999999 !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -413,126 +431,6 @@ fig_heat.update_layout(
     height=320
 )
 st.plotly_chart(fig_heat, width='stretch')
-
-st.divider()
-
-# ── Helper: build monthly weapon pivot filtered to Oct 2023+ ──────────────────
-def build_monthly_weapon_pivot(df_in, normalize_rows=False):
-    h = (
-        df_in.groupby(["Year_Month", "Weapon_Category"])
-        .size()
-        .reset_index(name="Incidents")
-    )
-    h = h[~h["Weapon_Category"].isin(["Unknown", "Other"])]
-    h = h[h["Year_Month"] >= "2023-10"]
-
-    piv = h.pivot_table(
-        index="Weapon_Category",
-        columns="Year_Month",
-        values="Incidents",
-        fill_value=0
-    )
-
-    if normalize_rows:
-        # Row-wise: % of each weapon's own total per month
-        piv_pct = piv.div(piv.sum(axis=1), axis=0) * 100
-    else:
-        # Column-wise: % of each month's total per weapon
-        piv_pct = piv.div(piv.sum(axis=0), axis=1) * 100
-
-    piv_pct = piv_pct.round(1)
-    piv_pct = piv_pct.loc[piv.sum(axis=1).sort_values(ascending=False).index]
-    return piv_pct
-
-oct7_x = "2023-10"
-
-# ── Heatmap A: column-normalized (% of month) + Oct 7 line ───────────────────
-st.subheader("Weapon mix by month — % of monthly incidents")
-st.caption("Each cell = share of that month's incidents using this weapon · Oct 7 marker shows escalation point")
-
-pivot_col = build_monthly_weapon_pivot(filtered, normalize_rows=False)
-
-fig_hm_col = px.imshow(
-    pivot_col,
-    labels=dict(x="Month", y="Weapon", color="% of month"),
-    color_continuous_scale=[
-        [0.0,  "#1a1a2e"],
-        [0.2,  "#2d1b4e"],
-        [0.5,  "#8b2635"],
-        [0.75, "#c0392b"],
-        [1.0,  "#ff6b6b"],
-    ],
-    aspect="auto",
-    text_auto=False,
-)
-fig_hm_col.update_traces(
-    hovertemplate="<b>%{y}</b><br>%{x}<br>%{z:.1f}% of that month's incidents<extra></extra>"
-)
-cols_list_col = list(pivot_col.columns)
-if "2023-10" in cols_list_col:
-    oct7_idx_col = cols_list_col.index("2023-10")
-    fig_hm_col.add_vline(
-        x=oct7_idx_col - 0.5,
-        line_dash="dash",
-        line_color="rgba(255,255,255,0.5)",
-        annotation_text="Oct 7",
-        annotation_font_color="white",
-        annotation_position="top left"
-    )
-fig_hm_col.update_layout(
-    plot_bgcolor="#f7f5f2", paper_bgcolor="#f7f5f2", font_color="#333333",
-    xaxis=dict(tickangle=45, tickfont=dict(size=8)),
-    yaxis=dict(tickfont=dict(size=10)),
-    coloraxis_colorbar=dict(title="% of month"),
-    margin=dict(t=30, b=60, l=20, r=20),
-    height=320
-)
-st.plotly_chart(fig_hm_col, width='stretch')
-
-st.divider()
-
-# ── Heatmap B: row-normalized (% of weapon's own total) + Oct 7 line ─────────
-st.subheader("Weapon activity by month — % of each weapon's total")
-st.caption("Each cell = share of that weapon's all-time incidents in this month · Shows when each weapon peaked relative to itself")
-
-pivot_row = build_monthly_weapon_pivot(filtered, normalize_rows=True)
-
-fig_hm_row = px.imshow(
-    pivot_row,
-    labels=dict(x="Month", y="Weapon", color="% of weapon total"),
-    color_continuous_scale=[
-        [0.0,  "#1a1a2e"],
-        [0.2,  "#2d1b4e"],
-        [0.5,  "#8b2635"],
-        [0.75, "#c0392b"],
-        [1.0,  "#ff6b6b"],
-    ],
-    aspect="auto",
-    text_auto=False,
-)
-fig_hm_row.update_traces(
-    hovertemplate="<b>%{y}</b><br>%{x}<br>%{z:.1f}% of this weapon's total incidents<extra></extra>"
-)
-cols_list_row = list(pivot_row.columns)
-if "2023-10" in cols_list_row:
-    oct7_idx_row = cols_list_row.index("2023-10")
-    fig_hm_row.add_vline(
-        x=oct7_idx_row - 0.5,
-        line_dash="dash",
-        line_color="rgba(255,255,255,0.5)",
-        annotation_text="Oct 7",
-        annotation_font_color="white",
-        annotation_position="top left"
-    )
-fig_hm_row.update_layout(
-    plot_bgcolor="#f7f5f2", paper_bgcolor="#f7f5f2", font_color="#333333",
-    xaxis=dict(tickangle=45, tickfont=dict(size=8)),
-    yaxis=dict(tickfont=dict(size=10)),
-    coloraxis_colorbar=dict(title="% of weapon total"),
-    margin=dict(t=30, b=60, l=20, r=20),
-    height=320
-)
-st.plotly_chart(fig_hm_row, width='stretch')
 
 st.divider()
 
