@@ -32,11 +32,11 @@ def load_topics():
 df = load_topics()
 df = df[df["theme"] != "Unclassified"].copy()
 
-st.title("Discovered Themes — NLP Topic Modeling")
+st.title("Discovered Themes: NLP Topic Modeling")
 st.markdown(
     "<p style='font-size:13px; color:#888888;'>"
-    "Themes surfaced by unsupervised topic modeling (BERTopic) on incident descriptions — "
-    "no keywords supplied. Each incident is assigned to its dominant theme."
+    "Themes surfaced by unsupervised topic modeling (BERTopic) on incident descriptions, "
+    "with no keywords supplied. Each incident is assigned to its dominant theme."
     "</p>",
     unsafe_allow_html=True
 )
@@ -51,18 +51,18 @@ c1, c2, c3 = st.columns(3)
 with c1:
     n = int(mode_counts.get("Direct Violence", 0))
     st.metric("Direct Violence", f"{n:,}")
-    st.caption(f"{n/total*100:.0f}% — airstrikes, shootings, shelling, residential strikes")
+    st.caption(f"{n/total*100:.0f}%: airstrikes, shootings, shelling, residential strikes")
 with c2:
     n = int(mode_counts.get("Access Denial", 0))
     st.metric("Access Denial", f"{n:,}")
-    st.caption(f"{n/total*100:.0f}% — blocked ambulances, fuel deprivation, checkpoint obstruction")
+    st.caption(f"{n/total*100:.0f}%: blocked ambulances, fuel deprivation, checkpoint obstruction")
 with c3:
     n = int(mode_counts.get("Detention", 0))
     st.metric("Detention", f"{n:,}")
-    st.caption(f"{n/total*100:.0f}% — arrests of health workers")
+    st.caption(f"{n/total*100:.0f}%: arrests of health workers")
 
 st.info(
-    "**Key finding:** roughly 1 in 5 attacks on healthcare were non-kinetic — "
+    "**Key finding:** roughly 1 in 5 attacks on healthcare were non-kinetic, "
     "denying access, fuel, or movement rather than striking directly. This systemic "
     "obstruction pattern was surfaced by topic modeling and is not captured by "
     "casualty counts alone."
@@ -205,7 +205,7 @@ st.plotly_chart(fig_region, width='stretch')
 st.divider()
 
 # ── Cross-validation: convergence AND divergence, two focused points ──────────
-st.subheader("Model validation — does the unsupervised model agree with hand-coding?")
+st.subheader("Model validation: does the unsupervised model agree with hand-coding?")
 
 # Compute the two numbers we actually highlight
 rc_rate = df.loc[df["theme"] == "Red Cross / Crescent Targeting", "protected_entity"].mean()
@@ -222,13 +222,13 @@ with colA:
     st.caption(
         "The unsupervised **Red Cross / Crescent** theme overlaps with the independently "
         "hand-coded protected-entity flag. Two methods that share no logic landed on the "
-        "same incidents — validating both."
+        "same incidents, validating both."
     )
 with colB:
     st.metric("Discovery", f"{obstruction_count}")
     st.caption(
         f"Access-denial incidents (checkpoints, ambulances, fuel) the model grouped into a "
-        f"coherent theme — of which {obstruction_missed} tripped **none** of the keyword flags. "
+        f"coherent theme, of which {obstruction_missed} tripped **none** of the keyword flags. "
         "The model surfaced an entire non-kinetic attack pattern that keyword methods never captured."
     )
 
@@ -284,7 +284,7 @@ for _, row in sub.head(8).iterrows():
 st.divider()
 st.caption(
     "Method: BERTopic with all-MiniLM-L6-v2 sentence embeddings on incident descriptions. "
-    "Themes are unsupervised — discovered from the text, not predefined. Topics were grouped "
+    "Themes are unsupervised, discovered from the text, not predefined. Topics were grouped "
     "into three modes of attack for interpretability. Incidents below the model's confidence "
     "threshold (Unclassified) are excluded from this view."
 )
